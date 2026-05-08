@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/randr79/cadmus/v0/errors"
-	"github.com/randr79/cadmus/v0/types"
+	"github.com/randr79/cadmus/errors"
+	"github.com/randr79/cadmus/types"
 )
 
 type Dispatcher interface {

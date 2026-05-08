@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/randr79/cadmus/v0/types"
+	"github.com/randr79/cadmus/types"
 )
 
 type ParsedArgs map[string][]string

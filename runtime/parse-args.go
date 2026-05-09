@@ -1,11 +1,9 @@
-package arguments
+package runtime
 
 import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/randr79/cadmus/types"
 )
 
 type ParsedArgs map[string][]string
@@ -96,7 +94,7 @@ func ParseRawArgs(args []string) map[string][]string {
 	return result
 }
 
-func ParseArgs(fields map[string]types.FieldInfo, rawArgs map[string][]string) (ParsedArgs, error) {
+func ParseArgs(fields map[string]FieldInfo, rawArgs map[string][]string) (ParsedArgs, error) {
 	result := make(map[string][]string)
 
 	// We houden bij welke positionele argumenten we al hebben verbruikt

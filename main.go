@@ -3,7 +3,7 @@ package main
 import (
 	_ "embed"
 
-	"github.com/randr79/cadmus/cmd/javelin/cmd"
+	"github.com/randr79/cadmus/cmd"
 )
 
 //go:generate go run ./bootstrap/generate.go

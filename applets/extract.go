@@ -8,7 +8,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/randr79/cadmus/javelin/extract"
+	"github.com/randr79/cadmus/extract"
 	"github.com/randr79/cadmus/types"
 )
 

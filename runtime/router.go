@@ -1,38 +1,36 @@
-package cadmus
+package runtime
 
 import (
 	"strings"
-
-	"github.com/randr79/cadmus/types"
 )
 
 type Router interface {
 	GetRootCmd() string
 	MaxRouteDepth() int
-	GetRoutes() map[string]types.EntryPoint
+	GetRoutes() map[string]EntryPoint
 	GetManifest() []byte
-	Register(name string, entrypoint types.EntryPoint)
+	Register(name string, entrypoint EntryPoint)
 }
 
 type router struct {
 	appname  string
 	manifest []byte
-	commands map[string]types.EntryPoint
+	commands map[string]EntryPoint
 }
 
 func NewRouter(embeddedManifest []byte, appname string) Router {
 	return &router{
 		appname:  appname,
 		manifest: embeddedManifest,
-		commands: make(map[string]types.EntryPoint),
+		commands: make(map[string]EntryPoint),
 	}
 }
 
-func (r *router) Register(name string, entrypoint types.EntryPoint) {
+func (r *router) Register(name string, entrypoint EntryPoint) {
 	r.commands[name] = entrypoint
 }
 
-func (r *router) GetRoutes() map[string]types.EntryPoint {
+func (r *router) GetRoutes() map[string]EntryPoint {
 	return r.commands
 }
 

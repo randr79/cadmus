@@ -171,8 +171,8 @@ func (b Builder) CreateAdapter(adapterName string, cmd types.CommandEntry, targe
 
 	importLines := make(map[string]bool)
 	importLines[`"fmt"`] = true
-	importLines[`"github.com/randr79/cadmus/arguments"`] = true
-	importLines[`"github.com/randr79/cadmus/types"`] = true
+	importLines[`"github.com/randr79/cadmus/runtime"`] = true
+	importLines[`"github.com/randr79/cadmus/runtime/types"`] = true
 	importLines[fmt.Sprintf(`"%s"`, cmd.Package)] = true
 
 	for alias, path := range cmd.Imports {

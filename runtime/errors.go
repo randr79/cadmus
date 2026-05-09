@@ -1,4 +1,4 @@
-package errors
+package runtime
 
 type UnknownCommand error
 type FileNotFound error

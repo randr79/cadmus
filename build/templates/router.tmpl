@@ -3,7 +3,7 @@ package {{.ThisPackage}}
 
 import (
 	_ "embed"
-	"github.com/randr79/cadmus"
+	"github.com/randr79/cadmus/runtime"
 )
 
 //go:embed manifest.json
@@ -11,10 +11,10 @@ var embeddedManifest []byte
 var Dispatch func() error
 
 func init() {
-    router := cadmus.NewRouter(embeddedManifest, "{{.AppName}}")
+    router := runtime.NewRouter(embeddedManifest, "{{.AppName}}")
     
     {{range $cmd, $adapterName := .Entrypoints}}router.Register("{{$cmd}}", New_{{$adapterName}})
     {{end}}
-	Dispatch = cadmus.NewDispatcher(router).Dispatch
+	Dispatch = runtime.NewDispatcher(router).Dispatch
 
 }

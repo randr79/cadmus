@@ -1,4 +1,4 @@
-package arguments
+package types
 
 import (
 	"encoding"

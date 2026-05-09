@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/randr79/cadmus/cmd/javelin/applets"
+	"github.com/randr79/cadmus/applets"
 )
 
 func main() {

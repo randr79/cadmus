@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/randr79/cadmus/javelin/build"
+	"github.com/randr79/cadmus/build"
 	"github.com/randr79/cadmus/types"
 )
 

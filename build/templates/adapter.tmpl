@@ -7,10 +7,10 @@ import (
 {{end}})
 
 type {{.AdapterName}} struct {
-	Metadata types.CommandEntry
+	Metadata runtime.CommandEntry
 }
 
-func (a *{{.AdapterName}}) GetMetadata() types.CommandEntry {
+func (a *{{.AdapterName}}) GetMetadata() runtime.CommandEntry {
 	return a.Metadata
 }
 
@@ -18,12 +18,12 @@ func (a *{{.AdapterName}}) Command() string {
 	return "{{.Command}}"
 }
 
-func (a *{{.AdapterName}}) Prepare(args []string) (types.Runnable, []string, error) {
+func (a *{{.AdapterName}}) Prepare(args []string) (runtime.Runnable, []string, error) {
 	cmd := &{{stringsPkgName .AppletPackage}}.{{.Struct}}{}
 	var errs []error
 
-	rawParsed := arguments.ParseRawArgs(args)
-	parsed, err := arguments.ParseArgs(a.Metadata.Fields, rawParsed)
+	rawParsed := runtime.ParseRawArgs(args)
+	parsed, err := runtime.ParseArgs(a.Metadata.Fields, rawParsed)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -31,10 +31,10 @@ func (a *{{.AdapterName}}) Prepare(args []string) (types.Runnable, []string, err
 {{range .Fields}}
 	{
 {{if .IsMap}}
-		cmd.{{.Name}} = arguments.Map(rawParsed, "{{index .Arguments 0}}.", func(vals []string, parse func(string, *[]error) {{.CleanType}}, errs *[]error) {{.CleanType}} {
-			return types.SelectFirst(vals, parse, errs)
+		cmd.{{.Name}} = types.Map(rawParsed, "{{index .Arguments 0}}.", func(vals []string, parse func(string, *[]error) {{.CleanType}}, errs *[]error) {{.CleanType}} {
+			return runtime.SelectFirst(vals, parse, errs)
 		}, func(v string, errs *[]error) {{.CleanType}} {
-			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+			return types.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
 		}, &errs)
 {{else}}
 {{if .Match}}
@@ -51,12 +51,12 @@ func (a *{{.AdapterName}}) Prepare(args []string) (types.Runnable, []string, err
 		}
 {{end}}
 {{if .IsSlice}}
-		cmd.{{.Name}} = arguments.Apply(parsed.List("{{.Name}}"), func(v string, errs *[]error) {{.CleanType}} {
-			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+		cmd.{{.Name}} = types.Apply(parsed.List("{{.Name}}"), func(v string, errs *[]error) {{.CleanType}} {
+			return types.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
 		}, &errs)
 {{else}}
 		cmd.{{.Name}} = func(v string, errs *[]error) {{.Type}} {
-			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+			return types.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
 		}(parsed.Get("{{.Name}}"), &errs)
 {{end}}
 {{end}}
@@ -70,14 +70,14 @@ func (a *{{.AdapterName}}) Prepare(args []string) (types.Runnable, []string, err
 	return cmd, args, nil
 }
 
-func New_{{.AdapterName}}() types.Command {
+func New_{{.AdapterName}}() runtime.Command {
 	return &{{.AdapterName}}{
-		Metadata: types.CommandEntry{
+		Metadata: runtime.CommandEntry{
 			Label: "{{.Command}}",
-			Fields: map[string]types.FieldInfo{
+			Fields: map[string]runtime.FieldInfo{
 {{range .Fields}}
 				"{{.Name}}": {
-					Type: "{{.Type}}",
+					// Type: "{{.Type}}",
 					Default: "{{.Default}}",
 					Arguments: []string{ {{range .Arguments}}"{{.}}",{{end}} },
 				},

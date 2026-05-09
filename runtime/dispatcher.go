@@ -1,4 +1,4 @@
-package cadmus
+package runtime
 
 import (
 	"context"
@@ -6,9 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/randr79/cadmus/errors"
-	"github.com/randr79/cadmus/types"
 )
 
 type Dispatcher interface {
@@ -36,7 +33,7 @@ func (d *dispatcher) getArgs() []string {
 	}
 }
 
-func (d *dispatcher) getEntrypointArgs() (types.EntryPoint, []string, error) {
+func (d *dispatcher) getEntrypointArgs() (EntryPoint, []string, error) {
 	args := d.getArgs()
 	scanrange := d.router.MaxRouteDepth()
 	if arglen := len(args); arglen < scanrange {
@@ -49,7 +46,7 @@ func (d *dispatcher) getEntrypointArgs() (types.EntryPoint, []string, error) {
 			return handler, args[i:], nil
 		}
 	}
-	return nil, nil, errors.UnknownCommand(fmt.Errorf("%s found no command for `%s`", d.router.GetRootCmd(), strings.Join(args, " ")))
+	return nil, nil, UnknownCommand(fmt.Errorf("%s found no command for `%s`", d.router.GetRootCmd(), strings.Join(args, " ")))
 }
 
 func (d *dispatcher) newContext() context.Context {
@@ -63,7 +60,7 @@ func (d *dispatcher) Dispatch() error {
 		} else {
 			return runable.Run(d.newContext(), remainder)
 		}
-	} else if unk, ok := err.(errors.UnknownCommand); !ok {
+	} else if unk, ok := err.(UnknownCommand); !ok {
 		return err
 	} else {
 		return d.Help(unk)

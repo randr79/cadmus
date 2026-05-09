@@ -1,0 +1,89 @@
+{{define "adapter"}}
+// CODE GEGENEREERD DOOR MCL. NIET HANDMATIG AANPASSEN.
+package {{.ThisPackage}}
+
+import (
+{{range .ImportLines}}	{{.}}
+{{end}})
+
+type {{.AdapterName}} struct {
+	Metadata types.CommandEntry
+}
+
+func (a *{{.AdapterName}}) GetMetadata() types.CommandEntry {
+	return a.Metadata
+}
+
+func (a *{{.AdapterName}}) Command() string {
+	return "{{.Command}}"
+}
+
+func (a *{{.AdapterName}}) Prepare(args []string) (types.Runnable, []string, error) {
+	cmd := &{{stringsPkgName .AppletPackage}}.{{.Struct}}{}
+	var errs []error
+
+	rawParsed := arguments.ParseRawArgs(args)
+	parsed, err := arguments.ParseArgs(a.Metadata.Fields, rawParsed)
+	if err != nil {
+		return nil, nil, err
+	}
+
+{{range .Fields}}
+	{
+{{if .IsMap}}
+		cmd.{{.Name}} = arguments.Map(rawParsed, "{{index .Arguments 0}}.", func(vals []string, parse func(string, *[]error) {{.CleanType}}, errs *[]error) {{.CleanType}} {
+			return types.SelectFirst(vals, parse, errs)
+		}, func(v string, errs *[]error) {{.CleanType}} {
+			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+		}, &errs)
+{{else}}
+{{if .Match}}
+		// Match tag validatie voor elke ruwe string
+		for _, v := range parsed.List("{{.Name}}") {
+			matched, err := regexp.MatchString(`{{.Match}}`, v)
+			if err != nil {
+				errs = append(errs, fmt.Errorf("ongeldige regex in match tag voor {{.Name}}: %w", err))
+				break
+			}
+			if !matched {
+				errs = append(errs, fmt.Errorf("waarde `%s` voor {{.Name}} voldoet niet aan het patroon `%s`", v, `{{.Match}}`))
+			}
+		}
+{{end}}
+{{if .IsSlice}}
+		cmd.{{.Name}} = arguments.Apply(parsed.List("{{.Name}}"), func(v string, errs *[]error) {{.CleanType}} {
+			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+		}, &errs)
+{{else}}
+		cmd.{{.Name}} = func(v string, errs *[]error) {{.Type}} {
+			return arguments.{{.TypeConstructor}}(v){{.Validate}}.Validate(errs)
+		}(parsed.Get("{{.Name}}"), &errs)
+{{end}}
+{{end}}
+	}
+{{end}}
+
+	if len(errs) > 0 {
+		return nil, nil, fmt.Errorf("validation failed: %v", errs)
+	}
+
+	return cmd, args, nil
+}
+
+func New_{{.AdapterName}}() types.Command {
+	return &{{.AdapterName}}{
+		Metadata: types.CommandEntry{
+			Label: "{{.Command}}",
+			Fields: map[string]types.FieldInfo{
+{{range .Fields}}
+				"{{.Name}}": {
+					Type: "{{.Type}}",
+					Default: "{{.Default}}",
+					Arguments: []string{ {{range .Arguments}}"{{.}}",{{end}} },
+				},
+{{end}}
+			},
+		},
+	}
+}
+{{end}}

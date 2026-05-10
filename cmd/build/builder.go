@@ -15,7 +15,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/randr79/cadmus/types"
+	"github.com/randr79/cadmus/manifest"
 )
 
 //go:embed templates/adapter.tmpl
@@ -27,7 +27,7 @@ var routerTemplateStr string
 type Builder struct {
 	adapterTemplate *template.Template
 	routerTemplate  *template.Template
-	manifest        *types.Manifest
+	manifest        *manifest.Manifest
 }
 
 type adapterFieldData struct {
@@ -53,7 +53,7 @@ type adapterTemplateData struct {
 	Fields        []adapterFieldData
 }
 
-func NewBuilder(manifest *types.Manifest) (*Builder, error) {
+func NewBuilder(manifest *manifest.Manifest) (*Builder, error) {
 	if at, err := template.New("adapters").Funcs(template.FuncMap{
 		"stringsPkgName": func(p string) string {
 			parts := strings.Split(p, "/")
@@ -101,7 +101,7 @@ func GetTypeConstructor(typeName string) string {
 	}
 }
 
-func fieldTemplateData(name string, info types.FieldInfo) adapterFieldData {
+func fieldTemplateData(name string, info manifest.FieldInfo) adapterFieldData {
 
 	afd := adapterFieldData{
 		Name:      name,
@@ -134,7 +134,7 @@ func fieldTemplateData(name string, info types.FieldInfo) adapterFieldData {
 	return afd
 }
 
-func needsRegexp(fields map[string]types.FieldInfo) bool {
+func needsRegexp(fields map[string]manifest.FieldInfo) bool {
 	for _, info := range fields {
 		if info.Match != "" {
 			return true
@@ -143,8 +143,8 @@ func needsRegexp(fields map[string]types.FieldInfo) bool {
 	return false
 }
 
-func (b Builder) nameCommands() map[string]types.CommandEntry {
-	result := make(map[string]types.CommandEntry, len(b.manifest.Commands))
+func (b Builder) nameCommands() map[string]manifest.CommandEntry {
+	result := make(map[string]manifest.CommandEntry, len(b.manifest.Commands))
 	reg := regexp.MustCompile(`[^a-zA-Z0-9]+`)
 	for i, cmd := range b.manifest.Commands {
 		name := strings.Trim(reg.ReplaceAllString(strings.ToUpper(cmd.Command), "_"), "_")
@@ -159,7 +159,7 @@ func (b Builder) nameCommands() map[string]types.CommandEntry {
 	return result
 }
 
-func (b Builder) CreateAdapter(adapterName string, cmd types.CommandEntry, targetDir string) error {
+func (b Builder) CreateAdapter(adapterName string, cmd manifest.CommandEntry, targetDir string) error {
 	// 1. Maak het specifieke adapter bestand aan
 
 	fileName := filepath.Join(targetDir, fmt.Sprintf("%s.gen.go", strings.ToLower(adapterName)))

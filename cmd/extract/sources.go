@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/randr79/cadmus/types"
+	"github.com/randr79/cadmus/manifest"
 	"golang.org/x/tools/go/packages"
 )
 
-func Extract(sourceDir string) ([]types.CommandEntry, error) {
-	commands := make([]types.CommandEntry, 0)
+func Extract(sourceDir string) ([]manifest.CommandEntry, error) {
+	commands := make([]manifest.CommandEntry, 0)
 	var errs []error
 	if pkgs, err := packages.Load(&packages.Config{
 		Mode: packages.NeedSyntax | packages.NeedTypes | packages.NeedName | packages.NeedTypesInfo,

@@ -8,8 +8,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/randr79/cadmus/build"
-	"github.com/randr79/cadmus/types"
+	"github.com/randr79/cadmus/cmd/build"
+	"github.com/randr79/cadmus/manifest"
 )
 
 // @build
@@ -32,7 +32,7 @@ func assertDir(target string) error {
 
 }
 
-func readmanifest(inputfile string) (*types.Manifest, error) {
+func readmanifest(inputfile string) (*manifest.Manifest, error) {
 	var dec json.Decoder
 	if h, err := os.Open(inputfile); err != nil {
 		return nil, fmt.Errorf("could not read manifest: %w", err)
@@ -41,7 +41,7 @@ func readmanifest(inputfile string) (*types.Manifest, error) {
 		dec = *json.NewDecoder(h)
 		dec.DisallowUnknownFields()
 	}
-	var manifest types.Manifest
+	var manifest manifest.Manifest
 	if err := dec.Decode(&manifest); err != nil {
 		return nil, fmt.Errorf("could not parse JSON: %w", err)
 	}

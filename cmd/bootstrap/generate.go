@@ -5,19 +5,19 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/randr79/cadmus/applets"
+	"github.com/randr79/cadmus/cmd/applets"
 )
 
 func main() {
 	//bootstrapping the javlin tool (eat our own dogfood)
 	//as we are executed from main these paths are relative to main!
-	extract("./applets")
-	create("./cmd")
+	extract("./cmd/applets")
+	create("./cmd/commands")
 }
 
 func extract(appletsDirs ...string) {
 	if err := (&applets.Extract{
-		Title:   "javelin",
+		Title:   "cadmus",
 		Applets: appletsDirs,
 	}).Run(context.Background(), nil); err != nil {
 		fmt.Print(err.Error())

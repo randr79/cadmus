@@ -8,8 +8,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/randr79/cadmus/extract"
-	"github.com/randr79/cadmus/types"
+	"github.com/randr79/cadmus/cmd/extract"
+	"github.com/randr79/cadmus/manifest"
 )
 
 // @extract
@@ -41,7 +41,7 @@ func (c *Extract) Run(ctx context.Context, args []string) error {
 		enc.SetEscapeHTML(false)
 	}
 
-	commands := make([]types.CommandEntry, 0)
+	commands := make([]manifest.CommandEntry, 0)
 	errs := make([]error, 0, len(c.Applets))
 
 	for _, dir := range c.Applets {
@@ -52,7 +52,7 @@ func (c *Extract) Run(ctx context.Context, args []string) error {
 
 		}
 	}
-	manifest := types.Manifest{
+	manifest := manifest.Manifest{
 		Project:     c.Title,
 		GeneratedAt: time.Now().Format(time.DateTime),
 		Commands:    commands,

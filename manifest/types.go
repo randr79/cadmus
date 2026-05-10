@@ -1,8 +1,4 @@
-package types
-
-import (
-	"context"
-)
+package manifest
 
 type Manifest struct {
 	Project     string
@@ -29,21 +25,6 @@ type FieldInfo struct {
 	Validate      string   // Validate method with args (e.g. between(1,10))
 	Env           string   // Environment variable name
 	Required      bool     // Whether this field is required (based on required tag)
-	Arguments     []string // the command line argument keys (e.g. -a --append or */# for any positional or a number for fixed positions)
+	Arguments     []string // the command line argument keys (e.g. -a --append or * or # for any positional or a number for fixed positions)
 	ArgumentCount int      // the expected number of arguments
-}
-
-type EntryPoint func() Command
-
-type Command interface {
-	Command() string
-	GetMetadata() CommandEntry                                                    // Returns data from the manifest
-	Prepare(arguments []string) (runable Runnable, remainder []string, err error) // Performs the type-safe hydration
-}
-
-// Runnable is the interface implemented by your business logic structs.
-type Runnable interface {
-	// Run receives the context (for Core/Manifest) and
-	// the slice of arguments NOT consumed by the command match or flags.
-	Run(ctx context.Context, args []string) error
 }

@@ -14,7 +14,7 @@ import (
 	"strings"
 	"unicode"
 
-	ct "github.com/randr79/cadmus/types"
+	"github.com/randr79/cadmus/manifest"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -118,8 +118,8 @@ func (ce CommandExtractor) isStructRunMethod(method *ast.FuncDecl) (structName s
 	}
 }
 
-func (ce CommandExtractor) Extract(file *ast.File) ([]ct.CommandEntry, []error) {
-	candidates := make(map[string]ct.CommandEntry)
+func (ce CommandExtractor) Extract(file *ast.File) ([]manifest.CommandEntry, []error) {
+	candidates := make(map[string]manifest.CommandEntry)
 	methods := make(map[string]bool)
 	var errs []error
 	ast.Inspect(file, func(n ast.Node) bool {
@@ -139,7 +139,7 @@ func (ce CommandExtractor) Extract(file *ast.File) ([]ct.CommandEntry, []error) 
 				} else if fields, imports, err := ce.createCommandFields(st); err != nil {
 					errs = append(errs, err)
 				} else {
-					candidates[cmd] = ct.CommandEntry{
+					candidates[cmd] = manifest.CommandEntry{
 						Command:     cmd,
 						Label:       label,
 						Description: desc,
@@ -228,8 +228,8 @@ func (ce CommandExtractor) getArgumentCount(tag string, fieldType string) (int, 
 
 }
 
-func (ce CommandExtractor) createCommandFields(st *ast.StructType) (fields map[string]ct.FieldInfo, imports map[string]string, err error) {
-	fields = make(map[string]ct.FieldInfo)
+func (ce CommandExtractor) createCommandFields(st *ast.StructType) (fields map[string]manifest.FieldInfo, imports map[string]string, err error) {
+	fields = make(map[string]manifest.FieldInfo)
 	imports = make(map[string]string)
 
 	for _, f := range st.Fields.List {
@@ -245,7 +245,7 @@ func (ce CommandExtractor) createCommandFields(st *ast.StructType) (fields map[s
 		var buf bytes.Buffer
 		printer.Fprint(&buf, ce.pkg.Fset, f.Type)
 		typestring := buf.String()
-		fi := ct.FieldInfo{
+		fi := manifest.FieldInfo{
 			Description: f.Comment.Text(),
 			Type:        typestring,
 			Validate:    tag.Get("validate"),

@@ -3,11 +3,15 @@ package main
 import (
 	_ "embed"
 
-	"github.com/randr79/cadmus/cmd"
+	"github.com/randr79/cadmus/cmd/commands"
 )
 
-//go:generate go run ./bootstrap/generate.go
-//go:generate go install .
+//go:generate echo $PWD
+//go:generate ./cmd/bootstrap/bootstrap.sh
+
+//go:generate ./cadmus extract -t cadmus ./cmd/applets
+//go:generate ./cadmus build -o ./cmd/applets
+
 func main() {
-	cmd.Dispatch()
+	commands.Dispatch()
 }

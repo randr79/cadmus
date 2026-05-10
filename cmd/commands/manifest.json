@@ -1,0 +1,95 @@
+{
+    "Project": "cadmus",
+    "GeneratedAt": "2026-05-10 15:41:44",
+    "Commands": [
+        {
+            "Command": "build",
+            "Label": "",
+            "Description": "Reads a json export and generates the Go adapters and registry.",
+            "Package": "github.com/randr79/cadmus/cmd/applets",
+            "Struct": "Build",
+            "Imports": {},
+            "Fields": {
+                "CommandsDir": {
+                    "Description": "where to write the commands to\n",
+                    "Type": "string",
+                    "Default": ".",
+                    "Match": "",
+                    "Validate": "",
+                    "Env": "",
+                    "Required": false,
+                    "Arguments": [
+                        "-o",
+                        "--out"
+                    ],
+                    "ArgumentCount": 1
+                },
+                "Manifest": {
+                    "Description": "the manifest with the commands\n",
+                    "Type": "string",
+                    "Default": "",
+                    "Match": ".*",
+                    "Validate": "MinLen(1)",
+                    "Env": "",
+                    "Required": false,
+                    "Arguments": [
+                        "-m",
+                        "--manifest"
+                    ],
+                    "ArgumentCount": 1
+                }
+            }
+        },
+        {
+            "Command": "extract",
+            "Label": "",
+            "Description": "Scans Go files for @command markers and produces an json at `OutputFile`",
+            "Package": "github.com/randr79/cadmus/cmd/applets",
+            "Struct": "Extract",
+            "Imports": {},
+            "Fields": {
+                "Applets": {
+                    "Description": "where to find the structs (applets)\n",
+                    "Type": "[]string",
+                    "Default": "./applets/",
+                    "Match": "",
+                    "Validate": "",
+                    "Env": "",
+                    "Required": true,
+                    "Arguments": [
+                        "#"
+                    ],
+                    "ArgumentCount": -1
+                },
+                "Manifest": {
+                    "Description": "where to temporarily store the manifest with the commands\n",
+                    "Type": "string",
+                    "Default": "",
+                    "Match": "",
+                    "Validate": "",
+                    "Env": "",
+                    "Required": false,
+                    "Arguments": [
+                        "-m",
+                        "--manifest"
+                    ],
+                    "ArgumentCount": 1
+                },
+                "Title": {
+                    "Description": "the title of the generated router\n",
+                    "Type": "string",
+                    "Default": "",
+                    "Match": "",
+                    "Validate": "",
+                    "Env": "",
+                    "Required": false,
+                    "Arguments": [
+                        "-t",
+                        "--title"
+                    ],
+                    "ArgumentCount": 1
+                }
+            }
+        }
+    ]
+}
